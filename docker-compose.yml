@@ -1,0 +1,15 @@
+services:
+  gmail-filter:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - gmail_data:/data
+    restart: unless-stopped
+
+volumes:
+  gmail_data:

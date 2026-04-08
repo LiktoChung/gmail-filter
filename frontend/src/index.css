@@ -1,0 +1,11 @@
+/* Global reset; theme colors and typography come from App.css */
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
