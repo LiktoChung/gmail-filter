@@ -333,7 +333,12 @@ def create_app() -> FastAPI:
     @app.get("/api/aggregates")
     def aggregates(
         group_by: Literal["domain", "sender", "age", "newsletter"] = Query("domain"),
-        top_n: int = Query(40, ge=5, le=200),
+        top_n: int = Query(
+            0,
+            ge=0,
+            le=500_000,
+            description="Max groups to return, by descending count; 0 = all groups",
+        ),
     ) -> dict[str, Any]:
         conn = db.get_connection()
         try:
@@ -350,10 +355,12 @@ def create_app() -> FastAPI:
             key = row_bucket_key(group_by, d)
             counts[key] = counts.get(key, 0) + 1
 
-        items = sorted(counts.items(), key=lambda x: -x[1])[:top_n]
+        ordered = sorted(counts.items(), key=lambda x: -x[1])
+        if top_n > 0:
+            ordered = ordered[:top_n]
         return {
             "group_by": group_by,
-            "items": [{"key": k, "count": c} for k, c in items],
+            "items": [{"key": k, "count": c} for k, c in ordered],
             "cached_total": sum(counts.values()),
         }
 

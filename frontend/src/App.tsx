@@ -420,7 +420,9 @@ export default function App() {
   const refreshAggregates = useCallback(async () => {
     try {
       const data = await api<AggResp>(
-        "/api/aggregates?group_by=" + encodeURIComponent(aggGroup),
+        "/api/aggregates?group_by=" +
+          encodeURIComponent(aggGroup) +
+          "&top_n=0",
       );
       setAgg(data);
     } catch {
@@ -1203,7 +1205,9 @@ export default function App() {
                   <option value="newsletter">Newsletter (heuristic)</option>
                 </select>
               </label>
-              <span className="muted chart-stat">Cached: {agg?.cached_total ?? "—"}</span>
+              <span className="muted chart-stat">
+                Cached: {agg?.cached_total ?? "—"} · {agg?.items.length ?? "—"} groups
+              </span>
               <button
                 type="button"
                 className="btn chart-fs-btn"
@@ -1267,8 +1271,8 @@ export default function App() {
             )}
             <p className="muted chart-hint">
               {aggViewMode === "chart"
-                ? "Hover for labels. Click a bubble to list that bucket from the cache (counts match the chart). Drag or zoom in fullscreen."
-                : "Click a row to list messages for that group from the cache (same counts as the chart)."}
+                ? "All groups in the cache are shown (sorted by count). Hover for labels. Click a bubble to list that bucket. Drag or zoom in fullscreen. Very large lists may be slow."
+                : "All groups are listed (sorted by count). Click a row to load messages for that group from the cache."}
             </p>
           </div>
         </div>
