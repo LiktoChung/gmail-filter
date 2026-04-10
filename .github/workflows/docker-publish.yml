@@ -4,6 +4,12 @@
 
 name: Docker publish
 
+# Requires repo Settings → Actions → General → Workflow permissions:
+# "Read and write permissions" (if the default is read-only, pushes to ghcr.io fail with write_package).
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches: [main, master]
@@ -16,9 +22,6 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout
