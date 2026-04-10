@@ -1287,7 +1287,7 @@ export default function App() {
           <div>{job.message}</div>
           {job.status === "running" && job.kind === "sync" && job.requests_per_minute != null && (
             <div className="muted small">
-              Measured API rate (rolling 60s): ~{Math.round(job.requests_per_minute)} requests/min
+              Measured API rate (rolling 60s): ~{Math.round(job.requests_per_minute)} messages/min
               {job.adaptive_workers != null && job.adaptive_pause_seconds != null && (
                 <>
                   {" "}
