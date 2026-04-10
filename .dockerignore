@@ -3,5 +3,8 @@
 **/node_modules
 **/__pycache__
 **/*.pyc
+# Never send local secrets into `docker build` context (runtime config is via compose/env at deploy).
 .env
+**/.env
+.env.local
 frontend/dist
