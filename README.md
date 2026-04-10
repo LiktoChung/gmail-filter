@@ -16,6 +16,53 @@ Self-hosted web app to search Gmail with the **same query operators as the Gmail
 
 ## 1. Docker setup
 
+### 1.0 Pre-built image (no git clone)
+
+If you only want to run the app and do **not** need the source tree, use the image published to **GitHub Container Registry** (`ghcr.io`). You still create your **own** Google OAuth client and `.env` (see **Section 2**); nothing secret is baked into the image.
+
+1. **Install [Docker](https://docs.docker.com/get-docker/)** (Docker Compose is included as `docker compose`).
+
+2. **Create a folder** and add a `.env` file with at least:
+
+   ```env
+   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your-client-secret
+   REDIRECT_URI=http://localhost:8000/api/auth/callback
+   ```
+
+   Follow **Section 2 — Google Cloud & Gmail API** to obtain the client ID and secret and to set the redirect URI in Google Cloud to match `REDIRECT_URI` exactly.
+
+3. **Add the Compose file** for the pulled image. From the same folder as `.env`, either:
+
+   - Download it from GitHub (use your fork’s `OWNER`/`REPO` if needed; for this upstream use `liktochung/gmail-filter` when that matches the repo you track):
+
+     ```bash
+     curl -fsSL -O https://raw.githubusercontent.com/liktochung/gmail-filter/main/docker-compose.image.yml
+     ```
+
+   - Or create `docker-compose.image.yml` yourself with the same contents as [`docker-compose.image.yml`](docker-compose.image.yml) in this repo.
+
+   By default the service uses **`ghcr.io/liktochung/gmail-filter:latest`**. To use another image or tag (for example your fork), set the environment variable **`GMAIL_FILTER_IMAGE`** when you run Compose, or edit the `image:` line in the file.
+
+4. **Start the stack:**
+
+   ```bash
+   docker compose -f docker-compose.image.yml pull
+   docker compose -f docker-compose.image.yml up -d
+   ```
+
+5. Open **http://localhost:8000**.
+
+**Pulling the image:** If the package on GitHub is **public**, `docker compose pull` works without logging in. If the package is **private**, sign in to the registry first, for example with a [Personal Access Token](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry) that has at least the `read:packages` scope:
+
+```bash
+echo YOUR_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+```
+
+The exact image name and tags appear under the repository’s **Packages** section on GitHub (for example `ghcr.io/<owner>/gmail-filter:main` or `:latest`).
+
+---
+
 ### 1.1 Environment file
 
 In the project folder, create `.env` from the example:

@@ -1,0 +1,22 @@
+# Run the pre-built image from GitHub Container Registry (no git clone).
+# Default image matches the upstream repo; override if you use a fork or another tag.
+#
+#   docker compose -f docker-compose.image.yml up -d
+#
+# Optional: GMAIL_FILTER_IMAGE=ghcr.io/myfork/gmail-filter:main docker compose -f docker-compose.image.yml up -d
+
+services:
+  gmail-filter:
+    image: ${GMAIL_FILTER_IMAGE:-ghcr.io/liktochung/gmail-filter:latest}
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - gmail_data:/data
+    restart: unless-stopped
+
+volumes:
+  gmail_data:
